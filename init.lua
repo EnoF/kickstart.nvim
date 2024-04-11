@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -153,6 +153,9 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
+
+-- text below applies for VimScript
+vim.o.guifont = 'Kode Mono:h14'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -549,7 +552,6 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
-        --
 
         lua_ls = {
           -- cmd = {...},
@@ -566,6 +568,8 @@ require('lazy').setup({
           },
         },
       }
+
+      require('lspconfig').pact_ls.setup {}
 
       -- Ensure the servers and tools above are installed
       --  To check the current status of installed tools and/or manually install
@@ -630,7 +634,29 @@ require('lazy').setup({
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
+        javascript = { { 'prettierd', 'prettier' } },
+        typescriptreact = { { 'prettierd', 'prettier' } },
+        typescript = { { 'prettierd', 'prettier' } },
+      },
+    },
+  },
+  { -- Easy Motion
+    'easymotion/vim-easymotion',
+    keys = {
+      {
+        '<leader>m',
+        '<Plug>(easymotion-prefix)',
+        desc = '[M]ove your cursor easily across your screen',
+      },
+      {
+        '<leader>n',
+        '<Plug>(easymotion-j)',
+        desc = 'Move to the [N]ext line',
+      },
+      {
+        '<leader>e',
+        '<Plug>(easymotion-k)',
+        desc = 'Move to the previous line, [K]?',
       },
     },
   },
@@ -745,13 +771,13 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    'rebelot/kanagawa.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'kanagawa'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -778,6 +804,13 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
+
+      -- Align
+      require('mini.align').setup {
+        options = {
+          merge_delimiter = ' ',
+        },
+      }
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -820,12 +853,41 @@ require('lazy').setup({
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup(opts)
 
+      vim.filetype.add {
+        extension = {
+          pact = 'pact',
+          repl = 'pact',
+        },
+      }
+      local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
+      parser_config.pact = {
+        install_info = {
+          url = '~/tree-sitter-pact',
+          files = { 'src/parser.c' },
+        },
+        filetype = 'pact',
+      }
       -- There are additional nvim-treesitter modules that you can use to interact
       -- with nvim-treesitter. You should go explore a few and see what interests you:
       --
       --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+    end,
+  },
+  {
+    'nvim-neotest/neotest',
+    dependencies = {
+      'marilari88/neotest-vitest',
+      'nvim-neotest/nvim-nio',
+      'plenary.nvim',
+    },
+    config = function()
+      require('neotest').setup {
+        adapters = {
+          require 'neotest-vitest',
+        },
+      }
     end,
   },
 
