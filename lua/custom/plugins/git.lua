@@ -53,13 +53,4 @@ return {
       },
     },
   },
-  {
-    'samoshkin/vim-mergetool',
-    config = function()
-      vim.g.mergetool_layout = 'LbR,m'
-    end,
-    keys = {
-      { '<leader>mt', ':MergetoolToggle<CR>', mode = 'n', desc = '[M]ergetool [T]oggle' },
-    },
-  },
 }
