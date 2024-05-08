@@ -106,6 +106,9 @@ end
 vim.keymap.set('n', '<leader>+', ':call ChangeScaleFactor(1.25)<cr>', { desc = 'Increase screen size' })
 vim.keymap.set('n', '<leader>-', ':call ChangeScaleFactor(1/1.25)<cr>', { desc = 'Decrease screen size' })
 
+-- move selections in visual mode
+vim.keymap.set('v', '<C-n>', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', '<C-e>', ":m '<-2<CR>gv=gv")
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 

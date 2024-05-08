@@ -34,7 +34,17 @@ return {
       {
         '<leader>tr',
         function()
-          require('neotest').run.run()
+          if vim.bo.filetype == 'pact' then
+            local file = vim.api.nvim_buf_get_name(0)
+            local out = vim.api.nvim_exec2('! pact -t ' .. file, { output = true })
+            local res = vim.split(out.output, '\n', { plain = true })
+            vim.cmd 'split new'
+            vim.api.nvim_buf_set_lines(0, 0, -1, true, res)
+            vim.opt_local.modified = false
+            vim.cmd '$'
+          else
+            require('neotest').run.run()
+          end
         end,
         desc = 'Run Nearest',
       },
@@ -228,7 +238,6 @@ return {
       -- VSCODE JS (Node/Chrome/Terminal/Jest)
       require('dap-vscode-js').setup {
         node_path = 'node',
-        -- debugger_cmd = { './dist/src/vsDebugServer.js' },
         debugger_path = os.getenv 'HOME' .. '/.DAP/vscode-js-debug',
         adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
       }
@@ -391,5 +400,51 @@ return {
       'rcarriga/nvim-dap-ui',
       'mxsdev/nvim-dap-vscode-js',
     },
+  },
+  {
+    'andrewferrier/debugprint.nvim',
+    opts = {
+      keymaps = {
+        normal = {
+          plain_below = '<leader>pp',
+          plain_above = '<leader>pP',
+          variable_below = '<leader>pv',
+          variable_above = '<leader>pV',
+          variable_below_alwaysprompt = nil,
+          variable_above_alwaysprompt = nil,
+          textobj_below = '<leader>po',
+          textobj_above = '<leader>pO',
+          toggle_comment_debug_prints = '<leader>pt',
+          delete_debug_prints = '<leader>pd',
+        },
+        visual = {
+          variable_below = '<leader>pv',
+          variable_above = '<leader>pV',
+        },
+      },
+      commands = {
+        toggle_comment_debug_prints = 'ToggleCommentDebugPrints',
+        delete_debug_prints = 'DeleteDebugPrints',
+      },
+    },
+    -- The 'keys' and 'cmds' sections of this configuration are only needed if
+    -- you want to take advantage of `lazy.nvim` lazy-loading.
+    keys = {
+      { '<leader>pp', mode = 'n' },
+      { '<leader>pP', mode = 'n' },
+      { '<leader>pv', mode = 'n' },
+      { '<leader>pV', mode = 'n' },
+      { '<leader>po', mode = 'n' },
+      { '<leader>pO', mode = 'n' },
+      { '<leader>pv', mode = 'x' },
+      { '<leader>pV', mode = 'x' },
+      { '<leader>pd', mode = 'n' },
+      { '<leader>pt', mode = 'n' },
+    },
+    cmd = {
+      'ToggleCommentDebugPrints',
+      'DeleteDebugPrints',
+    },
+    version = '*',
   },
 }

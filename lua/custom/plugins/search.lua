@@ -79,11 +79,11 @@ return {
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<C-l>', function()
-        builtin.send_selected_to_qflist()
+        builtin.smart_send_to_qflist()
         builtin.open_qflist()
       end, { desc = 'Send to quickfix list' })
       vim.keymap.set('i', '<C-l>', function()
-        builtin.send_selected_to_qflist()
+        builtin.smart_send_to_qflist()
         builtin.open_qflist()
       end, { desc = 'Send to quickfix list' })
 
@@ -111,26 +111,37 @@ return {
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
-  { -- Easy Motion
-    'easymotion/vim-easymotion',
+  {
+    'ggandor/leap.nvim',
     keys = {
-      {
-        '<leader>m',
-        '<Plug>(easymotion-prefix)',
-        desc = '[M]ove your cursor easily across your screen',
-      },
-      {
-        '<leader>n',
-        '<Plug>(easymotion-e)',
-        desc = 'Move to the end of a word',
-      },
-      {
-        '<leader>e',
-        '<Plug>(easymotion-b)',
-        desc = 'Move to the beginning of a word',
-      },
+      { 'r', '<Plug>(leap-forward)' },
+      { 'R', '<Plug>(leap-backward)' },
     },
   },
+  {
+    'ggandor/leap-spooky.nvim',
+    config = {},
+  },
+  -- { -- Easy Motion
+  --   'easymotion/vim-easymotion',
+  --   keys = {
+  --     {
+  --       '<leader>m',
+  --       '<Plug>(easymotion-prefix)',
+  --       desc = '[M]ove your cursor easily across your screen',
+  --     },
+  --     {
+  --       '<leader>n',
+  --       '<Plug>(easymotion-w)',
+  --       desc = 'Move to the end of a word',
+  --     },
+  --     {
+  --       '<leader>e',
+  --       '<Plug>(easymotion-b)',
+  --       desc = 'Move to the beginning of a word',
+  --     },
+  --   },
+  -- },
   {
     'ThePrimeagen/harpoon',
     dependencies = {
@@ -177,6 +188,35 @@ return {
         function()
           require('harpoon.ui').toggle_quick_menu()
         end,
+        mode = 'n',
+      },
+    },
+  },
+  {
+    'nvim-pack/nvim-spectre',
+    config = {},
+    keys = {
+      {
+        '<cmd>lua require("spectre").toggle()<CR>',
+        desc = 'Toggle Spectre',
+        mode = 'n',
+      },
+      {
+        '<leader>sw',
+        '<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
+        desc = 'Search current word',
+        mode = 'n',
+      },
+      {
+        '<leader>sw',
+        '<esc><cmd>lua require("spectre").open_visual()<CR>',
+        desc = 'Search current word',
+        mode = 'v',
+      },
+      {
+        '<leader>sp',
+        '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
+        desc = 'Search on current file',
         mode = 'n',
       },
     },
